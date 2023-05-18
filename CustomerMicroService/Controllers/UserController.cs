@@ -3,6 +3,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Google.Cloud.Firestore.V1.StructuredQuery.Types;
 
 namespace CustomerMicroService.Controllers
 {
@@ -22,8 +23,11 @@ namespace CustomerMicroService.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(Users user)
         {
-            // Save the user to Firestore
+
             DocumentReference document = await _usersCollection.AddAsync(user);
+            user.userId = document.Id;
+            DocumentReference uploadsRef = _usersCollection.Document(user.userId);
+            await uploadsRef.SetAsync(user);
             return Ok(user);
         }
 

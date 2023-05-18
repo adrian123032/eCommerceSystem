@@ -22,28 +22,46 @@ namespace OrderMicroService.Controllers
         {
             // Save the user to Firestore
             DocumentReference document = await _ordersCollection.AddAsync(order);
+            order.orderId = document.Id;
+            DocumentReference uploadsRef = _ordersCollection.Document(order.orderId);
+            await uploadsRef.SetAsync(order);
             return Ok(document.Id);
         }
 
         [HttpGet("orders/{email}")]
         public async Task<IActionResult> LoadOrders(string email)
         {
-            List<Orders> uploads = new List<Orders>();
+            List<Orders> orders = new List<Orders>();
             Query allOrdersQuery = _ordersCollection.WhereEqualTo("userEmail", email);
             QuerySnapshot allOrdersQuerySnapshot = await allOrdersQuery.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in allOrdersQuerySnapshot.Documents)
             {
                 Orders order = documentSnapshot.ConvertTo<Orders>();
-                    uploads.Add(order);
+                    orders.Add(order);
             }
 
-            return Ok(uploads);
+            return Ok(orders);
         }
 
-        [HttpGet("details/{order}")]
-        public async Task<IActionResult> GetOrder(Orders order)
+        [HttpGet("allOrders")]
+        public async Task<IActionResult> GetAllOrders()
         {
-            Query allOrdersQuery = _ordersCollection.WhereEqualTo("userEmail", order.userEmail);
+            List<Orders> orders = new List<Orders>();
+            Query allOrdersQuery = _ordersCollection;
+            QuerySnapshot allOrdersQuerySnapshot = await allOrdersQuery.GetSnapshotAsync();
+            foreach (DocumentSnapshot documentSnapshot in allOrdersQuerySnapshot.Documents)
+            {
+                Orders order = documentSnapshot.ConvertTo<Orders>();
+                orders.Add(order);
+            }
+
+            return Ok(orders);
+        }
+
+        [HttpGet("details/{orderId}")]
+        public async Task<IActionResult> GetOrder(string orderId)
+        {
+            Query allOrdersQuery = _ordersCollection.WhereEqualTo("orderId", orderId);
             QuerySnapshot allOrdersQuerySnapshot = await allOrdersQuery.GetSnapshotAsync();
             try
             {

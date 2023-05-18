@@ -8,33 +8,32 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-
     [FirestoreData]
-    public class Orders
+    public class Payments
     {
         [FirestoreProperty]
         [Required]
-        public string orderId { get; set; } = string.Empty;
+        public string paymentId { get; set; } = string.Empty;
         [FirestoreProperty]
         [Required]
         public string userEmail { get; set; } = string.Empty;
         [FirestoreProperty]
         [Required]
-        public string productId { get; set; } = string.Empty;
+        public string orderId { get; set; } = string.Empty;
         [FirestoreProperty]
         [Required]
-        public Timestamp orderDT { get; set; }
+        public Timestamp paymentDT { get; set; }
         public DateTime dateTime
         {
-            get { return orderDT.ToDateTime(); }
-            set { orderDT = Timestamp.FromDateTime(value.ToUniversalTime()); }
+            get { return paymentDT.ToDateTime(); }
+            set { paymentDT = Timestamp.FromDateTime(value.ToUniversalTime()); }
         }
         [FirestoreProperty]
         [Required]
-        public string paymentType { get; set; } = string.Empty;
+        public string paymentValue { get; set; } = string.Empty;
         [FirestoreProperty]
         [Required]
-        public int statusCode { get; set; }
+        public string currency { get; set; } = string.Empty;
 
     }
 }
