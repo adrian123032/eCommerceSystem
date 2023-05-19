@@ -18,7 +18,7 @@ namespace PaymentMicroService.Controllers
         }
 
         [HttpPost("AddPayment")]
-        public async Task<IActionResult> AddOrder(Payments payment)
+        public async Task<IActionResult> AddPayment(Payments payment)
         {
             // Save the user to Firestore
             DocumentReference document = await _paymentsCollection.AddAsync(payment);
@@ -29,7 +29,7 @@ namespace PaymentMicroService.Controllers
         }
 
         [HttpGet("payments/{email}")]
-        public async Task<IActionResult> LoadOrders(string email)
+        public async Task<IActionResult> LoadPayments(string email)
         {
             List<Payments> payments = new List<Payments>();
             Query allPaymentsQuery = _paymentsCollection.WhereEqualTo("userEmail", email);
@@ -43,7 +43,7 @@ namespace PaymentMicroService.Controllers
         }
 
         [HttpGet("paymentdetails/{paymentId}")]
-        public async Task<IActionResult> GetOrder(string paymentId)
+        public async Task<IActionResult> GetPayment(string paymentId)
         {
             Query allPaymentsQuery = _paymentsCollection.WhereEqualTo("paymentId", paymentId);
             QuerySnapshot allPaymentsQuerySnapshot = await allPaymentsQuery.GetSnapshotAsync();

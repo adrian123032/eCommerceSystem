@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ShippingMicroService.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class ShippingController : Controller
     {
         private readonly FirestoreDb _db;
@@ -26,30 +28,38 @@ namespace ShippingMicroService.Controllers
             return Ok(document.Id);
         }
 
-        [HttpGet("shipping/{orderId}")]
-        public async Task<IActionResult> LoadOrders(string orderId)
+
+        [HttpGet("shippingdetails/{orderId}")]
+        public async Task<IActionResult> GetOrder(string orderId)
         {
-            List<Shippings> payments = new List<Shippings>();
             Query allShippingsQuery = _shippingsCollection.WhereEqualTo("orderId", orderId);
             QuerySnapshot allShippingsQuerySnapshot = await allShippingsQuery.GetSnapshotAsync();
-            foreach (DocumentSnapshot documentSnapshot in allShippingsQuerySnapshot.Documents)
-            {
-                Payments payment = documentSnapshot.ConvertTo<Payments>();
-                payments.Add(payment);
-            }
-            return Ok(payments);
-        }
-
-        [HttpGet("paymentdetails/{paymentId}")]
-        public async Task<IActionResult> GetOrder(string paymentId)
-        {
-            Query allPaymentsQuery = _paymentsCollection.WhereEqualTo("paymentId", paymentId);
-            QuerySnapshot allPaymentsQuerySnapshot = await allPaymentsQuery.GetSnapshotAsync();
             try
             {
-                DocumentSnapshot documentSnapshot = allPaymentsQuerySnapshot.Documents.FirstOrDefault();
-                Payments paymentRet = documentSnapshot.ConvertTo<Payments>();
-                return Ok(paymentRet);
+                DocumentSnapshot documentSnapshot = allShippingsQuerySnapshot.Documents.FirstOrDefault();
+                Shippings shippingRet = documentSnapshot.ConvertTo<Shippings>();
+                return Ok(shippingRet);
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex);
+            }
+        }
+
+        [HttpGet("shippingupdate/{orderId}")]
+        public async Task<IActionResult> UpdateShipping(string orderId)
+        {
+            Query allShippingsQuery = _shippingsCollection.WhereEqualTo("orderId", orderId);
+            QuerySnapshot allShippingsQuerySnapshot = await allShippingsQuery.GetSnapshotAsync();
+            try
+            {
+                DocumentSnapshot documentSnapshot = allShippingsQuerySnapshot.Documents.FirstOrDefault();
+                Shippings shippingRet = documentSnapshot.ConvertTo<Shippings>();
+                shippingRet.statusCode++;
+                DocumentReference shippingsRef =_shippingsCollection.Document(documentSnapshot.Id);
+                await shippingsRef.SetAsync(shippingRet);
+                return Ok(shippingRet.statusCode);
 
             }
             catch (Exception ex)

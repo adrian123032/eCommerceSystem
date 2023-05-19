@@ -2,6 +2,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 using static Google.Cloud.Firestore.V1.StructuredQuery.Types;
 
@@ -14,6 +15,7 @@ namespace CustomerMicroService.Controllers
         private readonly FirestoreDb _db;
         private readonly CollectionReference _usersCollection;
 
+
         public UserController(FirestoreDb db)
         {
             _db = db;
@@ -23,7 +25,6 @@ namespace CustomerMicroService.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(Users user)
         {
-
             DocumentReference document = await _usersCollection.AddAsync(user);
             user.userId = document.Id;
             DocumentReference uploadsRef = _usersCollection.Document(user.userId);
@@ -32,10 +33,9 @@ namespace CustomerMicroService.Controllers
         }
 
         [HttpPost("signin")]
-        public async Task<IActionResult> SignIn(UserCredentials credential)
+        public async Task<IActionResult> SignIn(UserCredentials credentialString)
         {
-            // Authenticate the user with Firestore
-            Query query = _usersCollection.WhereEqualTo("Email", credential.Email).WhereEqualTo("Password", credential.Password);
+            Query query = _usersCollection.WhereEqualTo("Email", credentialString.Email).WhereEqualTo("Password", credentialString.Password);
             QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
             if (querySnapshot.Count == 0)
             {

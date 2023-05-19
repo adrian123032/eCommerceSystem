@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
+    [FirestoreData]
     public class Shippings
     {
         [FirestoreProperty]

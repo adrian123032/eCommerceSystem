@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Categories</title>
+</head>
+<body>
+    <h1>Select a Shopping Category:</h1>
+        <form method="post" action="/Products/List">
+            <input type="hidden" name="page" value="1" />
+            <select id="search" name="search">
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing</option>
+                <option value="books">Books</option>
+                <option value="clothes">Clothes</option>
+                <option value="storage">Storage</option>
+                <option value="monitors">Monitors</option>
+                <option value="smartphones">Smartphones</option>
+                <option value="outdoors">Outdoors</option>
+                <option value="kitchen">Kitchen</option>
+                <option value="drone">Drone</option>
+                <option value="movie">Movie</option>
+                <option value="collectible">Collectible</option>
+                <option value="decor">Decor</option>
+            </select>
+            <button type="submit">Go to List</button>
+        </form>
+</body>
+</html>

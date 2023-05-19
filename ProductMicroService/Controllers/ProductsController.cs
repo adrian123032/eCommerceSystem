@@ -4,7 +4,7 @@ using ProductMicroService.DataAccess;
 namespace ProductMicroService.Controllers
 {
     [ApiController]
-    [Route("api/amazon")]
+    [Route("api/ebay")]
     public class ProductsController : Controller
     {
         private readonly ScraperService _amazonService;
@@ -15,9 +15,9 @@ namespace ProductMicroService.Controllers
         }
 
         [HttpGet("products/{search}")]
-        public async Task<IActionResult> GetProductData(string search)
+        public async Task<IActionResult> GetProductData(int page, string search)
         {
-            string productData = await _amazonService.FetchProductData(search);
+            string productData = await _amazonService.FetchProductData(page, search);
 
             return Ok(productData);
         }
