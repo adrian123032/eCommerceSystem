@@ -73,5 +73,25 @@ namespace OrderMicroService.Controllers
                 return Ok(ex);
             }            
         }
+
+        [HttpGet("orderupdate/{orderId}")]
+        public async Task<IActionResult> UpdateOrders(string orderId)
+        {
+            Query allOrdersQuery = _ordersCollection.WhereEqualTo("orderId", orderId);
+            QuerySnapshot allOrdersQuerySnapshot = await allOrdersQuery.GetSnapshotAsync();
+            try
+            {
+                DocumentSnapshot documentSnapshot = allOrdersQuerySnapshot.Documents.FirstOrDefault();
+                Orders orderRet = documentSnapshot.ConvertTo<Orders>();
+                orderRet.statusCode++;
+                DocumentReference ordersRef = _ordersCollection.Document(documentSnapshot.Id);
+                await ordersRef.SetAsync(orderRet);
+                return Ok(orderRet.statusCode);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex);
+            }
+        }
     }
 }

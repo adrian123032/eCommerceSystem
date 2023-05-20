@@ -19,6 +19,9 @@ namespace Common
         public string orderId { get; set; } = string.Empty;
         [FirestoreProperty]
         [Required]
+        public string address { get; set; } = string.Empty;
+        [FirestoreProperty]
+        [Required]
         public Timestamp updateDT { get; set; }
         public Timestamp createdDT { get; set; }
         public DateTime dtUpdate

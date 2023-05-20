@@ -33,33 +33,73 @@ namespace PubSubFunction;
             var FromMessage = data.Message?.TextData;
             _logger.LogInformation($"Data received is {FromMessage}");
             try{
-            FromMessage = "{" + FromMessage.Split("{{")[1];
-             _logger.LogInformation($"Split 1");
-            Dictionary<string, object> orderData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split("Payments")[0]);
-            FromMessage = "Payments" + FromMessage.Split("Payments")[1];
+            //FromMessage = FromMessage.Split("Orders\": ")[1];
+            var dataJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage);
+             _logger.LogInformation($"Attempting retrieve Orders");
+            var orders = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Orders"].ToString());
+             _logger.LogInformation($"Orders: {orders}");
+             _logger.LogInformation($"Attempting retrieve Payments");
+            var payments = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Payments"].ToString());            
+             _logger.LogInformation($"Payments: {payments}");
+             _logger.LogInformation($"Attempting retrieve Shippings");
+            var shippings = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Shippings"].ToString());             
+             _logger.LogInformation($"Shippings: {shippings}");
+             _logger.LogInformation($"Attempting retrieve Notifications");
+            var notifications = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Notifications"].ToString());
+            _logger.LogInformation($"Notifications: {notifications}");
+             /*_logger.LogInformation($"Attempting to process: {FromMessage.Split(",\n\"Payments\": ")[0]}");
+            Dictionary<string, object> orderData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split(",\n\"Payments\"")[0]);
+            FromMessage = FromMessage.Split(",\n\"Payments\": ")[1];
             // Deserialize the Payments object
              _logger.LogInformation($"Split 2");
-            Dictionary<string, object> paymentData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split("Shippings")[0]);
-            FromMessage = "Shippings" + FromMessage.Split("Shippings")[1];
+             _logger.LogInformation($"Attempting to process: {FromMessage.Split(",\n\"Shippings\": ")[0]}");
+            Dictionary<string, object> paymentData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split(",\n\"Shippings\"")[0]);
+            FromMessage = FromMessage.Split(",\n\"Shippings\": ")[1];
             // Deserialize the Shippings object
              _logger.LogInformation($"Split 3");
-            Dictionary<string, object> shippingData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split("Notifications")[0]);
-            FromMessage = "Notifications" + FromMessage.Split("Notifications")[1];
+             _logger.LogInformation($"Attempting to process: {FromMessage.Split(",\n\"Notifications\": ")[0]}");
+            Dictionary<string, object> shippingData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split(",\n\"Notifications\"")[0]);
+            FromMessage = FromMessage.Split(",\n\"Notifications\": ")[1];
+            _logger.LogInformation($"Split 4"); 
+            _logger.LogInformation($"Attempting to process: {FromMessage.Split("}\n}")[0]}");
             // Deserialize the Notifications object
-            Dictionary<string, object> notificationData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split("}}")[0]);   
-             _logger.LogInformation($"Split 4");
+            Dictionary<string, object> notificationData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split("}\n}")[0]);   
+            */
+             
             
-            _logger.LogInformation($"OrderId is {orderData["orderId"].ToString()}");
+            _logger.LogInformation($"OrderId is {orders["orderId"].ToString()}");
 
-            
-            var responseOrder =  _httpClient.PostAsJsonAsync($"https://localhost:7171/Order/AddOrder", orderData);
-            responseOrder.Wait();
-            var responsePayment =  _httpClient.PostAsJsonAsync($"https://localhost:7105/Payment/AddPayment", paymentData);
-            responsePayment.Wait();
-            var responseShipping =  _httpClient.PostAsJsonAsync($"https://localhost:7266/Shipping/AddShipping", shippingData);
-            responseShipping.Wait();
-            var responseNotification =  _httpClient.PostAsJsonAsync($"https://localhost:7254/User/AddNot", notificationData);
-            responseNotification.Wait();
+            FirestoreDb db = FirestoreDb.Create("striking-audio-387012");
+            CollectionReference orderDb = db.Collection("orders");
+            CollectionReference paymentDb = db.Collection("payments");
+            CollectionReference shippingDb = db.Collection("shippings");
+            CollectionReference notificationDb = db.Collection("notifications");
+
+            _logger.LogInformation($"Adding Order");
+            //Add Order
+            var documentO = orderDb.AddAsync(orders);
+            documentO.Wait();
+            _logger.LogInformation($"Adding Order Complete");
+
+            _logger.LogInformation($"Adding Payment");
+            //Add Payment
+            var documentP = paymentDb.AddAsync(payments);
+            documentP.Wait();
+            _logger.LogInformation($"Adding Payment Complete");
+
+            _logger.LogInformation($"Adding Shipping");
+            //Add Shipping
+            var documentS = shippingDb.AddAsync(shippings);
+            documentS.Wait();
+            _logger.LogInformation($"Adding Shipping Complete");
+
+            _logger.LogInformation($"Adding Notification");
+            //Add Notification
+            var n = notificationDb.AddAsync(notifications);
+            n.Wait();
+            _logger.LogInformation($"Adding Notification Complete");
+
+
             }catch(Exception ex){
                 _logger.LogInformation($"Exception: {ex}");
             }

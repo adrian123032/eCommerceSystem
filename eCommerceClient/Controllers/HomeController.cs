@@ -19,10 +19,12 @@ namespace eCommerceClient.Controllers
             _logger = logger;
             _usersService = usersService;
         }
-
-        public IActionResult Index()
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            string email = User.FindFirst(ClaimTypes.Email)?.Value;
+            List<Notifications> notifications = await _usersService.GetAllNotifications(email);
+            return View(notifications);
         }
 
         public IActionResult Privacy()

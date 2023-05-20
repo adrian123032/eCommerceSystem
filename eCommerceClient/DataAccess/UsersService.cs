@@ -74,5 +74,25 @@ namespace eCommerceClient.DataAccess
             }
             throw new Exception("Failed to sign in user using the Customers Micro Service.");
         }
+
+        public async Task<List<Notifications>> GetAllNotifications(string email)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync($"https://localhost:7254/User/notifications/{email}");
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonData = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    List<Notifications> notifications = JsonConvert.DeserializeObject<List<Notifications>>(jsonData);
+                    return notifications;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+
+            }
+            throw new Exception("Failed to Retrieve All Notifications using the Customers Micro Service.");
+        }
     }
 }

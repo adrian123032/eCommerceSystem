@@ -31,9 +31,6 @@ namespace Common
         [FirestoreProperty]
         [Required]
         public string paymentValue { get; set; } = string.Empty;
-        [FirestoreProperty]
-        [Required]
-        public string currency { get; set; } = string.Empty;
 
     }
 }
