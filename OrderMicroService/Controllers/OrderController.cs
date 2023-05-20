@@ -20,7 +20,6 @@ namespace OrderMicroService.Controllers
         [HttpPost("AddOrder")]
         public async Task<IActionResult> AddOrder(Orders order)
         {
-            // Save the user to Firestore
             DocumentReference document = await _ordersCollection.AddAsync(order);
             order.orderId = document.Id;
             DocumentReference uploadsRef = _ordersCollection.Document(order.orderId);

@@ -15,7 +15,7 @@ namespace ProductMicroService.DataAccess
 
         public async Task<string> FetchProductData(int page, string search)
         {
-            string url = $"{BaseUrl}/products?page_number={page}&product_name={search}&country=";
+            string url = $"{BaseUrl}/products?page_number={page}&product_name={search}&country=ireland";
 
             HttpResponseMessage response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -30,7 +30,7 @@ namespace ProductMicroService.DataAccess
 
         public async Task<string> FetchProductDetails(string id)
         {
-            string url = $"{BaseUrl}/products/{id}?api_key=be62f40164e29fc64c1cac6dcf60c6aa";
+            string url = $"{BaseUrl}/products/{id}?country=ireland";
 
             HttpResponseMessage response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)

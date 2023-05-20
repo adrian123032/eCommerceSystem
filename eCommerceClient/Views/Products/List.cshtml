@@ -13,9 +13,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.product_id)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.name)
             </th>
             <th>
@@ -37,12 +34,6 @@
                 @Html.DisplayNameFor(model => model.description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.sales_potential)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.link)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.reviews)
             </th>
             <th>
@@ -54,9 +45,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.product_id)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.name)
             </td>
@@ -79,21 +67,13 @@
                 @Html.DisplayFor(modelItem => item.description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.sales_potential)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.link)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.reviews)
             </td>
             <td>
                     <img src="@item.thumbnail" alt="Thumbnail" />
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Details", "Details", new { product_id = item.product_id }) |
             </td>
         </tr>
 }

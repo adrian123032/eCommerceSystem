@@ -1,6 +1,7 @@
 ﻿using Common;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
@@ -14,12 +15,14 @@ namespace CustomerMicroService.Controllers
     {
         private readonly FirestoreDb _db;
         private readonly CollectionReference _usersCollection;
+        private readonly CollectionReference _notificationsCollection;
 
 
         public UserController(FirestoreDb db)
         {
             _db = db;
             _usersCollection = _db.Collection("users");
+            _notificationsCollection = _db.Collection("notifications");
         }
 
         [HttpPost("signup")]
@@ -61,5 +64,28 @@ namespace CustomerMicroService.Controllers
             Users user = documentSnapshot.ConvertTo<Users>();
             return Ok(user);
         }
+
+        [HttpPost("AddNot")]
+        public async Task<IActionResult> AddNot(Notifications notification)
+        {
+            DocumentReference document = await _notificationsCollection.AddAsync(notification);
+            return Ok(notification);
+        }
+
+        [HttpGet("notifications/{email}")]
+        public async Task<IActionResult> LoadNotifications(string email)
+        {
+            List<Notifications> notifications = new List<Notifications>();
+            Query allNotificationsQuery = _notificationsCollection.WhereEqualTo("email", email);
+            QuerySnapshot allNotificationsQuerySnapshot = await allNotificationsQuery.GetSnapshotAsync();
+            foreach (DocumentSnapshot documentSnapshot in allNotificationsQuerySnapshot.Documents)
+            {
+                Notifications notification = documentSnapshot.ConvertTo<Notifications>();
+                notifications.Add(notification);
+            }
+
+            return Ok(notifications);
+        }
+
     }
 }

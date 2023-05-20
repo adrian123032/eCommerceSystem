@@ -17,8 +17,6 @@ namespace eCommerceClient.DataAccess
 
         public async Task<Users> SignUp(Users user)
         {
-            string json = JsonConvert.SerializeObject(user);
-            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"https://localhost:7254/User/signup", user);
             if (response.IsSuccessStatusCode)
             { 
@@ -39,7 +37,6 @@ namespace eCommerceClient.DataAccess
 
         public async Task<Users> SignIn(UserCredentials userCredentials)
         {
-            string json = JsonConvert.SerializeObject(userCredentials);
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7254/User/signin", userCredentials);
             if (response.IsSuccessStatusCode)
             {
