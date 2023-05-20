@@ -72,11 +72,11 @@ namespace CustomerMicroService.Controllers
             return Ok(notification);
         }
 
-        [HttpGet("notifications/{email}")]
-        public async Task<IActionResult> LoadNotifications(string email)
+        [HttpGet("notifications/{userEmail}")]
+        public async Task<IActionResult> LoadNotifications(string userEmail)
         {
             List<Notifications> notifications = new List<Notifications>();
-            Query allNotificationsQuery = _notificationsCollection.WhereEqualTo("email", email);
+            Query allNotificationsQuery = _notificationsCollection.WhereEqualTo("email", userEmail);
             QuerySnapshot allNotificationsQuerySnapshot = await allNotificationsQuery.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in allNotificationsQuerySnapshot.Documents)
             {

@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using System.Net.Http.Json;
+using Common;
 
 namespace PubSubFunction;
 
@@ -36,16 +37,16 @@ namespace PubSubFunction;
             //FromMessage = FromMessage.Split("Orders\": ")[1];
             var dataJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage);
              _logger.LogInformation($"Attempting retrieve Orders");
-            var orders = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Orders"].ToString());
+            var orders = JsonConvert.DeserializeObject<Orders>(dataJson["Orders"].ToString());
              _logger.LogInformation($"Orders: {orders}");
              _logger.LogInformation($"Attempting retrieve Payments");
-            var payments = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Payments"].ToString());            
+            var payments = JsonConvert.DeserializeObject<Payments>(dataJson["Payments"].ToString());            
              _logger.LogInformation($"Payments: {payments}");
              _logger.LogInformation($"Attempting retrieve Shippings");
-            var shippings = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Shippings"].ToString());             
+            var shippings = JsonConvert.DeserializeObject<Shippings>(dataJson["Shippings"].ToString());             
              _logger.LogInformation($"Shippings: {shippings}");
              _logger.LogInformation($"Attempting retrieve Notifications");
-            var notifications = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson["Notifications"].ToString());
+            var notifications = JsonConvert.DeserializeObject<Notifications>(dataJson["Notifications"].ToString());
             _logger.LogInformation($"Notifications: {notifications}");
              /*_logger.LogInformation($"Attempting to process: {FromMessage.Split(",\n\"Payments\": ")[0]}");
             Dictionary<string, object> orderData = JsonConvert.DeserializeObject<Dictionary<string, object>>(FromMessage.Split(",\n\"Payments\"")[0]);
@@ -67,7 +68,7 @@ namespace PubSubFunction;
             */
              
             
-            _logger.LogInformation($"OrderId is {orders["orderId"].ToString()}");
+            _logger.LogInformation($"OrderId is {orders.orderId}");
 
             FirestoreDb db = FirestoreDb.Create("striking-audio-387012");
             CollectionReference orderDb = db.Collection("orders");

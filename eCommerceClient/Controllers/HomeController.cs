@@ -20,13 +20,18 @@ namespace eCommerceClient.Controllers
             _usersService = usersService;
         }
         [Authorize]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Notifications()
         {
             string email = User.FindFirst(ClaimTypes.Email)?.Value;
             List<Notifications> notifications = await _usersService.GetAllNotifications(email);
             return View(notifications);
         }
-
         public IActionResult Privacy()
         {
             return View();
@@ -54,7 +59,7 @@ namespace eCommerceClient.Controllers
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.UserData, $"{user.prefCurrency}/{user.prefCurrency}") };
+                new Claim(ClaimTypes.UserData, $"{user.prefCurrency}/{user.prefAddress}") };
             var identity = new ClaimsIdentity(claims, "MyCookieAuth");
 
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
@@ -84,7 +89,7 @@ namespace eCommerceClient.Controllers
             var claims = new List<Claim> { 
                 new Claim(ClaimTypes.Name, user.Name), 
                 new Claim(ClaimTypes.Email, user.Email), 
-                new Claim(ClaimTypes.UserData, $"{user.prefCurrency}/{user.prefCurrency}") };
+                new Claim(ClaimTypes.UserData, $"{user.prefCurrency}/{user.prefAddress}") };
             var identity = new ClaimsIdentity(claims, "MyCookieAuth");
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync("MyCookieAuth", claimsPrincipal);

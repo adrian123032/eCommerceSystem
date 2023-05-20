@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 
-namespace Common
+namespace eCommerceClient.DataAccess
 {
     public class PubSubOrderRepository
     {
@@ -16,13 +17,13 @@ namespace Common
         Topic topic;
         public PubSubOrderRepository()
         {
-            topicName = TopicName.FromProjectTopic("striking-audio-387012", "orders-sub");
+            topicName = TopicName.FromProjectTopic("striking-audio-387012", "orders");
             if (topicName == null)
             {
                 PublisherServiceApiClient publisher = PublisherServiceApiClient.Create();
                 try
                 {
-                    topicName = new TopicName("striking-audio-387012", "orders-sub");
+                    topicName = new TopicName("striking-audio-387012", "orders");
                     topic = publisher.CreateTopic(topicName);
                 }
                 catch (Exception ex)

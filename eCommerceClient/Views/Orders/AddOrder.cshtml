@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "AddOrder";
-    var productId = ViewData["productId"] as string;
-    var prefAddress = ViewData["prefAddress"] as string;
 }
 
 <h1>Confirm Order</h1>
@@ -15,14 +13,12 @@
         <form asp-action="AddOrder">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="productId" class="control-label"></label>
-                <input asp-for="productId" type = "hidden" class="form-control" value=@productId />
-                <span asp-validation-for="productId" class="text-danger"></span>
+                <input asp-for="productId" class="form-control" type="hidden" value=@Model.productId />
             </div>
             <div class="form-group">
                 <label class="control-label">Shipping Address</label>
-                <input asp-for="orderId" class="form-control" value=@prefAddress />
-                <span asp-validation-for="productId" class="text-danger"></span>
+                <input asp-for="orderId" class="form-control" value=@Model.orderId />
+                <span asp-validation-for="orderId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="paymentType" class="control-label"></label>

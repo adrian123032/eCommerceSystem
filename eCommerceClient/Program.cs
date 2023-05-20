@@ -2,12 +2,29 @@ using Common;
 using eCommerceClient.DataAccess;
 using Google;
 using System.Net.Http;
+
+
+
+void CheckSameSite(HttpContext httpContext, CookieOptions options)
+{
+    if (options.SameSite == SameSiteMode.None)
+    {
+        var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+
+        if (true)
+        {
+            options.SameSite = SameSiteMode.Unspecified;
+        }
+    }
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ProductsService>();
 builder.Services.AddScoped<UsersService>();
+builder.Services.AddScoped<OrdersService>();
 builder.Services.AddScoped<PubSubOrderRepository>();
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
@@ -27,6 +44,9 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 var app = builder.Build();
 
+
+var credentialPath = Path.Combine(app.Environment.ContentRootPath, "striking-audio-387012-ec89f859315f.json");
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialPath);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -48,15 +68,3 @@ app.MapControllerRoute(
 
 app.Run();
 
- void CheckSameSite(HttpContext httpContext, CookieOptions options)
-{
-    if (options.SameSite == SameSiteMode.None)
-    {
-        var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
-
-        if (true)
-        {
-            options.SameSite = SameSiteMode.Unspecified;
-        }
-    }
-}
